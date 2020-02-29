@@ -4,6 +4,7 @@ declare module "chess.js" {
         constructor(fen: string);
 
         ascii(): string;
+        board(): Array<Array<{type: string, color: string}>>;
     }
 
     export default Chess;
