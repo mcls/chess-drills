@@ -1,4 +1,4 @@
-import Chess  from 'chess.js'
+import Chess from 'chess.js'
 
 function component() {
     const element = document.createElement('div');
@@ -25,7 +25,7 @@ function component() {
     ascii = ascii.replace(/n/g, "♞")
     ascii = ascii.replace(/q/g, "♛")
     ascii = ascii.replace(/r/g, "♚")
-    element.innerHTML = "<pre>" + ascii + "</pre>"
+    element.innerHTML = "<pre style='font-size: 20px'>" + ascii + "</pre>"
   
     return element;
   }
