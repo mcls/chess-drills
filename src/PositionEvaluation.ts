@@ -1,4 +1,4 @@
-import Chess from 'chess.js'
+import { Chess } from './vendor/chess'
 
 export class PositionEvaluation {
     protected chess: Chess;
@@ -7,9 +7,10 @@ export class PositionEvaluation {
     protected position: string;
 
     constructor(chess: Chess, piece: ChessPiece, position: string) {
+        console.log(Chess)
         this.chess = new Chess(chess.fen())
         this.piece = piece;
-        this.position = position;
+        this.position = position
         this.chess.put({ type: piece.type, color: piece.color }, position)
 
         // The same board after the piece has been put into place and it's now black's move again

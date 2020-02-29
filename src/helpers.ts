@@ -1,5 +1,3 @@
-import Chess from 'chess.js'
-
 export enum PieceColor {
     White = 'w',
     Black = 'b'

@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import * as React from "react";
-import Chess from "chess.js";
+import { Chess } from "../vendor/chess";
 
 import Board from './Board'
 import { Piece } from "../helpers";
