@@ -3,8 +3,9 @@ import * as React from "react";
 import Chess from "chess.js";
 
 import Board from './Board'
-import { PositionEvaluation, Piece } from "../helpers";
+import { Piece } from "../helpers";
 import { css, jsx } from '@emotion/core'
+import { PositionEvaluation } from "../PositionEvaluation";
 
 interface FeedbackProps {
     message: string,
