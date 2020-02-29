@@ -25,6 +25,7 @@
     "@emotion/styled": "^10.0.27",
     "chess.js": "^0.10.3",
     "react": "^16.13.0",
-    "react-dom": "^16.13.0"
+    "react-dom": "^16.13.0",
+    "redux": "^4.0.5"
   }
 }
