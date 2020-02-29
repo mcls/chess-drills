@@ -1,6 +1,5 @@
 /** @jsx jsx */
 import * as React from "react";
-import Chess from "chess.js";
 import { css, jsx } from '@emotion/core'
 
 
@@ -8,7 +7,7 @@ import { Piece, pieceFromChessJS } from "../helpers"
 import { Square } from "./Square"
 
 export interface BoardProps { 
-    chess: Chess; 
+    board: Array<Array<ChessPiece>>; 
     onCellClick?(position: string, piece?: Piece):void,
 }
 export interface RowProps { 
@@ -23,7 +22,7 @@ const rowCss = css`
 `
 
 export class Row extends React.Component<RowProps,{}> {
-    render () {
+    render() {
         return <div css={rowCss}>
             {this.props.cells.map((cell, ix) => {
                 return <Square key={ix} 
@@ -37,13 +36,12 @@ export class Row extends React.Component<RowProps,{}> {
     }
 }
 
-export class Board extends React.Component<BoardProps, {}> {
+export default class Board extends React.Component<BoardProps, {}> {
     render() {
-        let board = this.props.chess.board()
+        let board = this.props.board
         console.log(board)
 
         return <div>
-                <h1>Board</h1>
                 {board.map((row, ix) => <Row key={ix} cells={row} rowIndex={ix} onCellClick={this.props.onCellClick} />)}
             </div>
     }

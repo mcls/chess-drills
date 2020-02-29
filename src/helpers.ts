@@ -85,6 +85,9 @@ export class PositionEvaluation {
         this.chess.put({ type: piece.type, color: piece.color }, position)
     }
 
+    board(): Array<Array<ChessPiece>> {
+        return this.chess.board()
+    }
     get potentialCaptures(): Array<string> {
         let legalMoves = this.chess.moves({ square: this.position })
         return this.onlyKeepCaptures(legalMoves)
@@ -92,9 +95,7 @@ export class PositionEvaluation {
 
     get threats(): Array<string> {
         let fen = this.chess.fen().replace(/w/, 'b')
-        console.log(fen)
         let nextChess = new Chess(fen)
-        console.log("........")
         let responses: Array<string> = []
         'abcdefgh'.split('').forEach(file => {
             for (let i = 1; i <= 8; i++) {
