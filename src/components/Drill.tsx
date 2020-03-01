@@ -72,10 +72,12 @@ export class Drill extends React.Component<DrillProps, DrillState> {
             return
         }
         let evaluation = new PositionEvaluation(this.props.chess, { type: "q", color: "w" }, position) 
-        console.log("Fork?", evaluation.isFork())
+        let isSkewer = evaluation.isSkewer();
+        let isFork = evaluation.isFork();
+        console.log("Fork?", isFork)
+        console.log("Skewer?", isSkewer)
         console.log("Safe?", evaluation.isSafe())
         console.log("Threats", evaluation.threats)
-        console.log(evaluation.ascii())
         
         this.setState({board: evaluation.board()})
         if (!evaluation.isSafe()) {
@@ -83,15 +85,16 @@ export class Drill extends React.Component<DrillProps, DrillState> {
                 feedback: `This is not a safe move! ${evaluation.threats}`,
                 feedbackType: FeedbackType.Bad,
             })
-        } else if (!evaluation.isFork()) {
+        } else if (isFork || isSkewer) {
             this.setState({ 
-                feedback: `This is not a fork`,
-                feedbackType: FeedbackType.Warning,
+                feedback: `Well done! Skewer? ${isSkewer}. Fork? ${isFork}`,
+                feedbackType: FeedbackType.Good,
             })
+            
         } else {
             this.setState({ 
-                feedback: `Well done! Forking both pieces.`,
-                feedbackType: FeedbackType.Good,
+                feedback: `This is not a fork or skewer`,
+                feedbackType: FeedbackType.Warning,
             })
         }
     }

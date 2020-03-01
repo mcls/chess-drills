@@ -47,11 +47,31 @@ export class PositionEvaluation {
     }
 
     isSkewer(): Boolean {
-        if (!this.isSafe()) {
+        if (!this.isSafe() || this.isFork()) {
             return false 
         }
         
-        // TODO: Implement
+        if (this.potentialCaptures.length == 0) return false 
+        
+        let len = this.potentialCaptures.length
+        let skewerFound = false;
+        this.potentialCaptures.filter((cap) => {
+            let chess1 = this.copyChessWithWhiteStart(this.chess)
+            let move = chess1.move(cap)
+            // move back
+            let copyChess = this.copyChessWithWhiteStart(chess1)
+            console.log(copyChess.move({ from: move.to, to: move.from }))
+            let pe = new PositionEvaluation(this.copyChessWithWhiteStart(copyChess), this.piece, this.position)
+            console.log(len, pe.potentialCaptures.length)
+            if (len == pe.potentialCaptures.length) {
+                skewerFound = true; // TODO: short circuit?
+            }
+        })
+        return skewerFound
+    }
+
+    copyChessWithWhiteStart(chess: Chess):Chess {
+        return new Chess(chess.fen().replace(/b/, "w"))
     }
 
     isSafe(): Boolean {

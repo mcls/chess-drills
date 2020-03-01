@@ -70,3 +70,14 @@ function stringToPieceColor(key: string):PieceColor {
 
     throw "Can't find PieceType for key: " + key
 }
+
+export const POSITIONS: Array<string> = (():Array<string> => {
+    let positions: Array<string> = []
+    'abcdefgh'.split('').forEach(file => {
+        for (let i = 1; i <= 8; i++) {
+            let position = `${file}${i}`
+            positions.push(position)
+        }
+    })
+    return positions
+})()

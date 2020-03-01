@@ -30,6 +30,17 @@ export declare class Chess {
      */
     put(piece: ChessPiece, position: string): Boolean
     /**
+     * Attempts to make a move on the board, returning a move object if the move was legal, otherwise null. 
+     * The .move function can be called two ways, by passing a string in Standard Algebraic Notation (SAN).
+     * 
+     * Or by passing .move() a move object (only the 'to', 'from', and when necessary 'promotion', fields are needed).
+     * 
+     * An optional sloppy flag can be used to parse a variety of non-standard move notations.
+     */
+    move(move: string | { from: string, to: string }, options?: {sloppy?: Boolean}): {
+        color: string, from: string, to: string, flags: string, piece: string, san: string
+    } | null
+    /**
      * Returns a list of legal moves from the current position. 
      * The function takes an optional parameter which controls the single-square move generation and verbosity.
      */
