@@ -1,71 +1,21 @@
 import { Chess } from './vendor/chess'
 import { POSITIONS } from './helpers'
-
-export class ChessDecorator {
-    readonly chess: Chess
-
-    constructor(chess: Chess) {
-        this.chess = chess
-    }
-
-    ascii(): string {
-        return this.chess.ascii()
-    }
-
-    board(): Array<Array<ChessPiece>> {
-        return this.chess.board()
-    }
-
-    fen(): string {
-        return this.chess.fen()
-    }
-
-    put(piece: ChessPiece, position: string): Boolean {
-        return this.chess.put(piece, position)
-    }
-
-    move(move: string | { from: string, to: string }) {
-        return this.chess.move(move)
-    }
-
-    moves(options?: { square?: string }): Array<string> {
-        return this.chess.moves(options)
-    }
-
-    // Extra methods below ----------
-
-    copy() {
-        return new ChessDecorator(new Chess(this.fen()))
-    }
-
-    copyWithWhiteStart(): ChessDecorator {
-        return new ChessDecorator(new Chess(this.chess.fen().replace(/b/, "w")))
-    }
-
-    potentialCaptures(position: string): Array<string> {
-        let legalMoves = this.chess.moves({ square: position })
-        return this.onlyKeepCaptures(legalMoves)
-    }
-
-    protected onlyKeepCaptures(moves: Array<string>): Array<string> {
-        return moves.filter((move) => move.match(/x/))
-    }
-}
+import { ChessWrapper } from './ChessWrapper';
 
 export class PositionEvaluation {
-    protected chess: ChessDecorator;
-    protected nextMoveChess: ChessDecorator;
+    protected chess: ChessWrapper;
+    protected nextMoveChess: ChessWrapper;
     protected piece: ChessPiece;
     protected position: string;
 
     constructor(chess: Chess, piece: ChessPiece, position: string) {
-        this.chess = new ChessDecorator(new Chess(chess.fen()))
+        this.chess = ChessWrapper.fromFEN(chess.fen())
         this.piece = piece;
         this.position = position
         this.chess.put({ type: piece.type, color: piece.color }, position)
 
         // The same board after the piece has been put into place and it's now black's move again
-        this.nextMoveChess = new ChessDecorator(new Chess(this.chess.fen().replace(/w/, 'b')))
+        this.nextMoveChess = this.chess.copyWithBlackStart()
     }
 
     board(): Array<Array<ChessPiece>> {
@@ -114,10 +64,6 @@ export class PositionEvaluation {
             }
         })
         return skewerFound
-    }
-
-    copyChessWithWhiteStart(chess: Chess):Chess {
-        return new Chess(chess.fen().replace(/b/, "w"))
     }
 
     isSafe(): Boolean {
