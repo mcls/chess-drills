@@ -1,12 +1,12 @@
 /** @jsx jsx */
 import * as React from "react";
-import { Chess } from "../vendor/chess";
 import * as _ from 'lodash';
 import { css, jsx } from '@emotion/core'
 
 import Board from './Board'
 import { Piece, POSITIONS } from "../helpers";
 import { PositionEvaluation } from "../PositionEvaluation";
+import { ChessWrapper } from "../ChessWrapper";
 
 interface FeedbackProps {
     message: string,
@@ -39,7 +39,7 @@ interface DrillState {
     feedback: string
     feedbackType: FeedbackType
     board: Array<Array<ChessPiece>>
-    chess: Chess
+    chess: ChessWrapper
 }
 
 interface DrillProps {
@@ -66,8 +66,8 @@ export class Drill extends React.Component<DrillProps, DrillState> {
         };
     }
 
-    generateRandomBoard(): Chess {
-        const chess = new Chess('8/8/8/8/8/8/8/8 w - - 0 1')
+    generateRandomBoard(): ChessWrapper {
+        const chess = ChessWrapper.fromFEN('8/8/8/8/8/8/8/8 w - - 0 1')
         let randomPosition = _.sample(POSITIONS.filter((pos) => pos != 'd4'))
         chess.put({ type: 'k', color: 'b' }, 'd4')
         chess.put({ type: _.sample(['r', 'n', 'b']), color: 'b' }, randomPosition)
@@ -121,6 +121,7 @@ export class Drill extends React.Component<DrillProps, DrillState> {
         let style = css`
             ${drillStyle}
             border-color: ${borderColor};
+            font-family: sans-serif;
 
             button {
                 padding: 10px 15px;
@@ -146,6 +147,7 @@ export class Drill extends React.Component<DrillProps, DrillState> {
             
             `
         return <div css={style}>
+            <h2>🥋 Chess Dojo 🥋</h2>
             <button onClick={(e) => { this.updateBoardWithRandomPosition() }}>New Position!</button>
             <Board board={this.state.board} onCellClick={this.handleCellClick.bind(this)} />
             <p><code>{this.state.chess.fen()}</code></p>
