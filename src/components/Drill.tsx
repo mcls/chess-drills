@@ -1,9 +1,10 @@
 /** @jsx jsx */
 import * as React from "react";
 import { Chess } from "../vendor/chess";
+import * as _ from 'lodash';
 
 import Board from './Board'
-import { Piece } from "../helpers";
+import { Piece, POSITIONS } from "../helpers";
 import { css, jsx } from '@emotion/core'
 import { PositionEvaluation } from "../PositionEvaluation";
 
@@ -38,10 +39,10 @@ interface DrillState {
     feedback: string
     feedbackType: FeedbackType
     board: Array<Array<ChessPiece>>
+    chess: Chess
 }
 
 interface DrillProps {
-    chess: Chess
 }
 
 const drillStyle = css`
@@ -56,12 +57,27 @@ const drillStyle = css`
 export class Drill extends React.Component<DrillProps, DrillState> {
     constructor(props: DrillProps) {
         super(props)
+        let chess = this.generateRandomBoard()
         this.state = {
             feedback: "-",
             feedbackType: FeedbackType.Good,
-            board: props.chess.board(),
+            chess: chess,
+            board: chess.board(),
         };
     }
+
+    generateRandomBoard(): Chess {
+        const chess = new Chess('8/8/8/2k5/8/8/8/8 w - - 0 1')
+        let randomPosition = _.sample(POSITIONS)
+        chess.put({ type: _.sample(['r', 'n', 'b']), color: 'b' }, randomPosition)
+        return chess
+    }
+
+    updateBoardWithRandomPosition() {
+        let chess = this.generateRandomBoard()
+        this.setState({chess: chess, board: chess.board()})
+    }
+
     handleCellClick(position: string, piece: Piece) {
         console.log("position:", position, "piece:", piece)
         if (piece != null) {
@@ -71,7 +87,7 @@ export class Drill extends React.Component<DrillProps, DrillState> {
             })
             return
         }
-        let evaluation = new PositionEvaluation(this.props.chess, { type: "q", color: "w" }, position) 
+        let evaluation = new PositionEvaluation(this.state.chess, { type: "q", color: "w" }, position) 
         let isSkewer = evaluation.isSkewer();
         let isFork = evaluation.isFork();
         console.log("Fork?", isFork)
@@ -104,9 +120,34 @@ export class Drill extends React.Component<DrillProps, DrillState> {
         let style = css`
             ${drillStyle}
             border-color: ${borderColor};
+
+            button {
+                padding: 10px 15px;
+                margin: 5px;
+                line-height: 12px;
+                font-size: 12px;
+                border-radius: 3px;
+                border: none;
+                cursor: pointer;
+                box-sizing: border-box;
+                text-decoration:none;
+                color:#FFFFFF;
+                background-color:#3369ff;
+                box-shadow: inset -2px -3px 0 0 rgba(0,0,0,0.17);
+                text-align: center;
+                position:relative;
+            }
+
+            button: active{
+                top: 0.1em;
+                box-shadow: inset 2px 2px 0 0 rgba(0,0,0,0.17);
+            }
+            
             `
         return <div css={style}>
+            <button onClick={(e) => { this.updateBoardWithRandomPosition() }}>New Position!</button>
             <Board board={this.state.board} onCellClick={this.handleCellClick.bind(this)} />
+            <p><code>{this.state.chess.fen()}</code></p>
             <Feedback message={this.state.feedback} type={this.state.feedbackType} />
             </div>
     }
