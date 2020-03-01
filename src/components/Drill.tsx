@@ -103,8 +103,14 @@ export class Drill extends React.Component<DrillProps, DrillState> {
                 feedbackType: FeedbackType.Bad,
             })
         } else if (isFork || isSkewer) {
+            let message = _.sample([
+                'Wax on, wax off! 🧼',
+                'Amazing! ✨',
+                'Paint the fence. Up... down. Up! Down! 🎨',
+                'Mr. Miagi approves! 👍'
+            ])
             this.setState({ 
-                feedback: `Well done! Skewer? ${isSkewer}. Fork? ${isFork}`,
+                feedback: `${message} ${isSkewer ? '🍢' : '🍴'}`,
                 feedbackType: FeedbackType.Good,
             })
             

@@ -1,4 +1,3 @@
-import { Chess } from './vendor/chess'
 import { POSITIONS } from './helpers'
 import { ChessWrapper } from './ChessWrapper';
 
@@ -8,7 +7,7 @@ export class PositionEvaluation {
     protected piece: ChessPiece;
     protected position: string;
 
-    constructor(chess: Chess, piece: ChessPiece, position: string) {
+    constructor(chess: ChessWrapper, piece: ChessPiece, position: string) {
         this.chess = ChessWrapper.fromFEN(chess.fen())
         this.piece = piece;
         this.position = position
