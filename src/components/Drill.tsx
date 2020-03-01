@@ -67,8 +67,9 @@ export class Drill extends React.Component<DrillProps, DrillState> {
     }
 
     generateRandomBoard(): Chess {
-        const chess = new Chess('8/8/8/2k5/8/8/8/8 w - - 0 1')
-        let randomPosition = _.sample(POSITIONS)
+        const chess = new Chess('8/8/8/8/8/8/8/8 w - - 0 1')
+        let randomPosition = _.sample(POSITIONS.filter((pos) => pos != 'd4'))
+        chess.put({ type: 'k', color: 'b' }, 'd4')
         chess.put({ type: _.sample(['r', 'n', 'b']), color: 'b' }, randomPosition)
         return chess
     }
