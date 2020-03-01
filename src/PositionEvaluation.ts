@@ -58,7 +58,7 @@ export class PositionEvaluation {
             // move back
             let chess2 = chess1.copyWithWhiteStart()
             chess2.move({ from: move.to, to: move.from })
-            let pe = new PositionEvaluation(chess2.copyWithWhiteStart().chess, this.piece, this.position)
+            let pe = new PositionEvaluation(chess2.copyWithWhiteStart(), this.piece, this.position)
             if (len == pe.potentialCaptures.length) {
                 skewerFound = true; // TODO: short circuit?
             }

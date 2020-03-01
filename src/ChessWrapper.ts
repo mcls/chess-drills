@@ -20,6 +20,10 @@ export class ChessWrapper {
         return this.chess.fen()
     }
 
+    get(square: string): ChessPiece {
+        return this.chess.get(square)
+    }
+
     put(piece: ChessPiece, position: string): Boolean {
         return this.chess.put(piece, position)
     }
