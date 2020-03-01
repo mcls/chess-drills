@@ -2,10 +2,10 @@
 import * as React from "react";
 import { Chess } from "../vendor/chess";
 import * as _ from 'lodash';
+import { css, jsx } from '@emotion/core'
 
 import Board from './Board'
 import { Piece, POSITIONS } from "../helpers";
-import { css, jsx } from '@emotion/core'
 import { PositionEvaluation } from "../PositionEvaluation";
 
 interface FeedbackProps {
