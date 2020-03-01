@@ -1,20 +1,71 @@
 import { Chess } from './vendor/chess'
+import { POSITIONS } from './helpers'
+
+export class ChessDecorator {
+    readonly chess: Chess
+
+    constructor(chess: Chess) {
+        this.chess = chess
+    }
+
+    ascii(): string {
+        return this.chess.ascii()
+    }
+
+    board(): Array<Array<ChessPiece>> {
+        return this.chess.board()
+    }
+
+    fen(): string {
+        return this.chess.fen()
+    }
+
+    put(piece: ChessPiece, position: string): Boolean {
+        return this.chess.put(piece, position)
+    }
+
+    move(move: string | { from: string, to: string }) {
+        return this.chess.move(move)
+    }
+
+    moves(options?: { square?: string }): Array<string> {
+        return this.chess.moves(options)
+    }
+
+    // Extra methods below ----------
+
+    copy() {
+        return new ChessDecorator(new Chess(this.fen()))
+    }
+
+    copyWithWhiteStart(): ChessDecorator {
+        return new ChessDecorator(new Chess(this.chess.fen().replace(/b/, "w")))
+    }
+
+    potentialCaptures(position: string): Array<string> {
+        let legalMoves = this.chess.moves({ square: position })
+        return this.onlyKeepCaptures(legalMoves)
+    }
+
+    protected onlyKeepCaptures(moves: Array<string>): Array<string> {
+        return moves.filter((move) => move.match(/x/))
+    }
+}
 
 export class PositionEvaluation {
-    protected chess: Chess;
-    protected nextMoveChess: Chess;
+    protected chess: ChessDecorator;
+    protected nextMoveChess: ChessDecorator;
     protected piece: ChessPiece;
     protected position: string;
 
     constructor(chess: Chess, piece: ChessPiece, position: string) {
-        console.log(Chess)
-        this.chess = new Chess(chess.fen())
+        this.chess = new ChessDecorator(new Chess(chess.fen()))
         this.piece = piece;
         this.position = position
         this.chess.put({ type: piece.type, color: piece.color }, position)
 
         // The same board after the piece has been put into place and it's now black's move again
-        this.nextMoveChess = new Chess(this.chess.fen().replace(/w/, 'b'))
+        this.nextMoveChess = new ChessDecorator(new Chess(this.chess.fen().replace(/w/, 'b')))
     }
 
     board(): Array<Array<ChessPiece>> {
@@ -22,23 +73,19 @@ export class PositionEvaluation {
     }
 
     get potentialCaptures(): Array<string> {
-        let legalMoves = this.chess.moves({ square: this.position })
-        return this.onlyKeepCaptures(legalMoves)
+        return this.chess.potentialCaptures(this.position)
     }
 
     get threats(): Array<string> {
         let responses: Array<string> = []
-        'abcdefgh'.split('').forEach(file => {
-            for (let i = 1; i <= 8; i++) {
-                let position = `${file}${i}`
-                if (position != this.position) {
-                    let captures = this.onlyKeepCaptures(this.nextMoveChess.moves({ square: position }))
-                    if (captures.length > 0 ) {
-                        responses = responses.concat(captures)
-                    }
+        POSITIONS.forEach((position) => {
+            if (position != this.position) {
+                let captures = this.nextMoveChess.potentialCaptures(position)
+                if (captures.length > 0 ) {
+                    responses = responses.concat(captures)
                 }
             }
-        });
+        })
         return responses
     }
 
@@ -55,14 +102,13 @@ export class PositionEvaluation {
         
         let len = this.potentialCaptures.length
         let skewerFound = false;
-        this.potentialCaptures.filter((cap) => {
-            let chess1 = this.copyChessWithWhiteStart(this.chess)
+        this.potentialCaptures.forEach((cap) => {
+            let chess1 = this.chess.copyWithWhiteStart()
             let move = chess1.move(cap)
             // move back
-            let copyChess = this.copyChessWithWhiteStart(chess1)
-            console.log(copyChess.move({ from: move.to, to: move.from }))
-            let pe = new PositionEvaluation(this.copyChessWithWhiteStart(copyChess), this.piece, this.position)
-            console.log(len, pe.potentialCaptures.length)
+            let chess2 = chess1.copyWithWhiteStart()
+            chess2.move({ from: move.to, to: move.from })
+            let pe = new PositionEvaluation(chess2.copyWithWhiteStart().chess, this.piece, this.position)
             if (len == pe.potentialCaptures.length) {
                 skewerFound = true; // TODO: short circuit?
             }
@@ -80,9 +126,5 @@ export class PositionEvaluation {
 
     ascii(): string {
         return this.chess.ascii()
-    }
-
-    protected onlyKeepCaptures(moves: Array<string>): Array<string> {
-        return moves.filter((move) => move.match(/x/))
     }
 }
