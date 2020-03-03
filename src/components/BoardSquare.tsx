@@ -3,12 +3,20 @@ import * as React from "react";
 import { css, jsx } from '@emotion/core'
 import { Piece, PieceColor } from "../helpers"
 
+export enum Highlight {
+    Good,
+    Bad,
+    Neutral
+}
+
 export interface CellProps { 
     piece?: Piece, 
     rowIndex: number,
     cellIndex: number,
+    position: string,
     onClick?(position: string, piece?: Piece):void,
-    orientationWhite: Boolean
+    orientationWhite: Boolean,
+    highlight: Highlight
 }
 
 const cellSize = 40;
@@ -21,7 +29,7 @@ const cellBaseCSS = css`
   float: left;
   font-size: ${cellSize - 5}px;
   text-shadow: 2px 2px rgba(0, 0, 0, 0.1);
-
+  box-sizing: border-box;
   font-weight: bold;
   text-align: center;
   cursor: pointer;
@@ -41,16 +49,7 @@ const lightCellCSS = css`
   background-color: lightgreen;
 `
 
-export class Square extends React.Component<CellProps,{}> {
-    get files(): Array<string> { 
-        let files = 'abcdefgh'.split('')
-        if (this.props.orientationWhite) {
-            return files;
-        } else {
-            return files.reverse();
-        }
-    }
-
+export class BoardSquare extends React.Component<CellProps,{}> {
     get rowNumber(): number {
         if (this.props.orientationWhite) {
             return 8 - this.props.rowIndex;
@@ -59,11 +58,7 @@ export class Square extends React.Component<CellProps,{}> {
         }
     }
 
-    get position():string {
-        let file = this.files[this.props.cellIndex]
-        return [file, this.rowNumber].join('')
-    }
-
+    // TODO: Extract this?
     get isDarkCell() {
         let rowIx = this.props.rowIndex
         let cellIx = this.props.cellIndex
@@ -81,21 +76,30 @@ export class Square extends React.Component<CellProps,{}> {
     }
 
     handleClick(e: React.MouseEvent) {
-        console.log(this.position, e)
         if (this.props.onClick) {
-            this.props.onClick(this.position, this.props.piece)
+            this.props.onClick(this.props.position, this.props.piece)
         }
     }
 
     render() {
         let content = this.props.piece != null ? this.props.piece.toEmoji() : ''
         let whitePiece = this.props.piece && this.props.piece.color == PieceColor.White
+
+        let bg = '';
+        if (this.props.highlight == Highlight.Good) {
+            bg = css`
+            border: 3px solid #060;
+            line-height: 34px;
+            `
+        }
         let style = css`
             ${this.isDarkCell ? darkCellCSS : lightCellCSS}
+            ${bg}
             color: ${whitePiece ? '#fff' : '#111'}
         `
+        
         return <div css={style}
-            title={this.position}
+            title={this.props.position}
             onClick={this.handleClick.bind(this)}>
             {content}
             </div>

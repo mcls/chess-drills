@@ -39,7 +39,8 @@ interface DrillState {
     feedback: string
     feedbackType: FeedbackType
     board: Array<Array<ChessPiece>>
-    chess: ChessWrapper
+    chess: ChessWrapper,
+    goodSquares: Array<string>
 }
 
 interface DrillProps {
@@ -63,6 +64,7 @@ export class Drill extends React.Component<DrillProps, DrillState> {
             feedbackType: FeedbackType.Good,
             chess: chess,
             board: chess.board(),
+            goodSquares: [],
         };
     }
 
@@ -76,7 +78,11 @@ export class Drill extends React.Component<DrillProps, DrillState> {
 
     updateBoardWithRandomPosition() {
         let chess = this.generateRandomBoard()
-        this.setState({chess: chess, board: chess.board()})
+        this.setState({
+            chess: chess, 
+            board: chess.board(),
+            goodSquares: [],
+        })
     }
 
     handleCellClick(position: string, piece: Piece) {
@@ -88,21 +94,26 @@ export class Drill extends React.Component<DrillProps, DrillState> {
             })
             return
         }
-        let evaluation = new PositionEvaluation(this.state.chess, { type: "q", color: "w" }, position) 
+        let placedPiece = { type: "q", color: "w" }
+        let evaluation = new PositionEvaluation(this.state.chess, placedPiece, position) 
         let isSkewer = evaluation.isSkewer();
         let isFork = evaluation.isFork();
         console.log("Fork?", isFork)
         console.log("Skewer?", isSkewer)
         console.log("Safe?", evaluation.isSafe())
         console.log("Threats", evaluation.threats)
+
+        let potential = this.state.chess.potentialTacticalPositions(placedPiece)
         
-        this.setState({board: evaluation.board()})
+        
+        let isGood = false
         if (!evaluation.isSafe()) {
             this.setState({ 
                 feedback: `This is not a safe move! ${evaluation.threats}`,
                 feedbackType: FeedbackType.Bad,
             })
         } else if (isFork || isSkewer) {
+            isGood = true
             let message = _.sample([
                 'Wax on, wax off! 🧼',
                 'Amazing! ✨',
@@ -118,6 +129,12 @@ export class Drill extends React.Component<DrillProps, DrillState> {
             this.setState({ 
                 feedback: `This is not a fork or skewer`,
                 feedbackType: FeedbackType.Warning,
+            })
+        }
+        this.setState({board: evaluation.board()})
+        if ( isGood ) {
+            this.setState({
+                goodSquares: _.concat(this.state.goodSquares, [position])
             })
         }
     }
@@ -155,7 +172,9 @@ export class Drill extends React.Component<DrillProps, DrillState> {
         return <div css={style}>
             <h2>🥋 Chess Dojo 🥋</h2>
             <button onClick={(e) => { this.updateBoardWithRandomPosition() }}>New Position!</button>
-            <Board board={this.state.board} onCellClick={this.handleCellClick.bind(this)} />
+            <Board board={this.state.board} 
+                goodSquares={this.state.goodSquares}
+                onCellClick={this.handleCellClick.bind(this)} />
             <p><code>{this.state.chess.fen()}</code></p>
             <Feedback message={this.state.feedback} type={this.state.feedbackType} />
             </div>
