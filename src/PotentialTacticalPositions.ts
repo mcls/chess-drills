@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import {uniq, concat} from 'lodash';
 
 export class PotentialTacticalPositions {
     readonly skewers: Array<string>
@@ -10,7 +10,7 @@ export class PotentialTacticalPositions {
     }
 
     allSquares(): Array<string> {
-        return _.uniq(_.concat(this.forks, this.skewers))
+        return uniq(concat(this.forks, this.skewers))
     }
 
     get totalCount(): number {

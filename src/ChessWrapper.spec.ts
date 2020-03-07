@@ -39,4 +39,24 @@ describe("ChessWrapper", () => {
 
         })
     })
+
+    describe("copyWithWhiteStart", () => {
+        it("works", () => {
+            let tests = [
+                [
+                    "8/8/8/8/n2k4/8/8/8 b - - 0 1", 
+                    "8/8/8/8/n2k4/8/8/8 w - - 0 1"
+                ],
+                [
+                    "8/8/8/8/b2k4/8/8/8 b - - 0 1", 
+                    "8/8/8/8/b2k4/8/8/8 w - - 0 1"
+                ],
+            ]
+            tests.forEach((test) => {
+                let [blackFEN, whiteFEN] = test
+                let result = ChessWrapper.fromFEN(blackFEN).copyWithWhiteStart().fen()
+                expect(result).toEqual(whiteFEN)
+            })
+        })
+    })
 })

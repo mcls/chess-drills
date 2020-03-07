@@ -44,7 +44,11 @@ export class ChessWrapper {
     }
 
     copyWithWhiteStart(): ChessWrapper {
-        return ChessWrapper.fromFEN(this.fen().replace(/b/, "w"))
+        // Note: We need spaces around the char in the regex, 
+        // because otherwise we might match the "b" for bishop 
+        // earlier within the FEN code
+        const whiteFEN = this.fen().replace(/ b /, " w ")
+        return ChessWrapper.fromFEN(whiteFEN)
     }
 
     copyWithBlackStart(): ChessWrapper {
