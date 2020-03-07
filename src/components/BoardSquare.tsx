@@ -19,7 +19,7 @@ export interface CellProps {
     highlight: Highlight
 }
 
-const cellSize = 40;
+const cellSize = 50;
 
 const cellBaseCSS = css`
   display: block;

@@ -85,14 +85,15 @@ export class Drill extends React.Component<DrillProps, DrillState> {
             return
         }
         let placedPiece = WHITE_QUEEN
-        let evaluation = new PositionEvaluation(this.state.chess, placedPiece, position) 
-        let isSkewer = evaluation.isSkewer();
-        let isFork = evaluation.isFork();
+        
+        let isUnsafe = _.includes(this.state.potential.unsafeSquares, position)
+        let isSkewer = _.includes(this.state.potential.skewers, position)
+        let isFork = _.includes(this.state.potential.forks, position)
         
         let isGood = false
-        if (!evaluation.isSafe()) {
+        if (isUnsafe) {
             this.setState({ 
-                feedback: `This is not a safe move! ${evaluation.threats}`,
+                feedback: `This is not a safe move!`,
                 feedbackType: FeedbackType.Bad,
             })
         } else if (isFork || isSkewer) {
@@ -114,7 +115,11 @@ export class Drill extends React.Component<DrillProps, DrillState> {
                 feedbackType: FeedbackType.Warning,
             })
         }
-        this.setState({board: evaluation.board()})
+
+        let chess = this.state.chess.copyWithWhiteStart()
+        chess.put(placedPiece, position)
+        this.setState({board: chess.board()})
+        
         if ( isGood ) {
 
             let newGoodSquares = _.concat(this.state.goodSquares, [position])
@@ -167,6 +172,7 @@ export class Drill extends React.Component<DrillProps, DrillState> {
             <Board board={this.state.board} 
                 goodSquares={this.state.goodSquares}
                 onCellClick={this.handleCellClick.bind(this)} />
+            <p css={{color: '#fff'}}>{this.state.chess.fen()}</p>
             <Feedback message={this.state.feedback} type={this.state.feedbackType} />
             <p>You found {this.state.goodSquares.length} of {this.state.potential.totalCount} solutions.</p>
             {progressBar}

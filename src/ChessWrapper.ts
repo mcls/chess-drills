@@ -63,6 +63,7 @@ export class ChessWrapper {
     potentialTacticalPositions(piece: ChessPiece): PotentialTacticalPositions {
         let forks: Array<string> = []
         let skewers: Array<string> = []
+        let unsafeSquares: Array<string> = []
         POSITIONS.forEach((pos) => {
             if (this.get(pos) != null) return // skip
 
@@ -71,6 +72,7 @@ export class ChessWrapper {
 
             let threats = this.threatsFor(pos)
             if (threats.length > 0) {
+                unsafeSquares.push(pos)
                 return // not a safe position because black can capture back
             }
 
@@ -104,7 +106,8 @@ export class ChessWrapper {
         })
         return new PotentialTacticalPositions({
             forks: forks,
-            skewers: skewers
+            skewers: skewers,
+            unsafeSquares: unsafeSquares
         })
     }
 
