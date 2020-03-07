@@ -8,35 +8,11 @@ import { Piece, POSITIONS } from "../helpers";
 import { PositionEvaluation } from "../PositionEvaluation";
 import { ChessWrapper } from "../ChessWrapper";
 import { PotentialTacticalPositions } from "../PotentialTacticalPositions";
+import { FeedbackType, Feedback } from "./Feedback";
+import { CountdownBar } from "./CountdownBar";
 
-interface FeedbackProps {
-    message: string,
-    type: FeedbackType
-}
-export class Feedback extends React.Component<FeedbackProps, {}> {
-    color() {
-        switch(this.props.type) {
-            case FeedbackType.Good: return "#090"
-            case FeedbackType.Bad: return "#F00"
-            case FeedbackType.Warning: return "darkorange"
-            case FeedbackType.Neutral: return "#333"
-        }
-    }
 
-    render() {
-        let style = css`
-            color: ${this.color()}
-        `
-        return <p css={style}>{this.props.message}</p>
-    }
-}
 
-enum FeedbackType {
-    Bad = 0,
-    Warning = 1,
-    Neutral = 2,
-    Good = 3,
-}
 
 interface DrillState {
     feedback: string
@@ -45,6 +21,7 @@ interface DrillState {
     chess: ChessWrapper,
     goodSquares: Array<string>,
     potential: PotentialTacticalPositions,
+    timeLeftToNextPosition: number,
 }
 
 interface DrillProps {
@@ -60,6 +37,8 @@ const drillStyle = css`
 `
 
 const WHITE_QUEEN = { type: "q", color: "w" }
+const TICK_INTERVAL = 5
+const TIME_TO_NEXT_POSITION = 200
 
 export class Drill extends React.Component<DrillProps, DrillState> {
     constructor(props: DrillProps) {
@@ -72,6 +51,7 @@ export class Drill extends React.Component<DrillProps, DrillState> {
             board: chess.board(),
             goodSquares: [],
             potential: chess.potentialTacticalPositions(WHITE_QUEEN),
+            timeLeftToNextPosition: 0,
         };
     }
 
@@ -89,7 +69,8 @@ export class Drill extends React.Component<DrillProps, DrillState> {
             chess: chess, 
             board: chess.board(),
             goodSquares: [],
-            potential: chess.potentialTacticalPositions(WHITE_QUEEN)
+            potential: chess.potentialTacticalPositions(WHITE_QUEEN),
+            timeLeftToNextPosition: 0,
         })
     }
 
@@ -140,9 +121,7 @@ export class Drill extends React.Component<DrillProps, DrillState> {
 
             // Generate new position if all solutions have been found
             if ( newGoodSquares.length >= this.state.potential.totalCount ) {
-                setTimeout(() => {
-                    this.updateBoardWithRandomPosition()
-                }, 1000)  
+                this.setState({ timeLeftToNextPosition: TIME_TO_NEXT_POSITION })
             }
         }
     }
@@ -175,8 +154,12 @@ export class Drill extends React.Component<DrillProps, DrillState> {
                 top: 0.1em;
                 box-shadow: inset 2px 2px 0 0 rgba(0,0,0,0.17);
             }
-            
             `
+        let progressBar = null
+
+        if ( this.state.timeLeftToNextPosition > 0 ) {
+            progressBar = <CountdownBar max={this.state.timeLeftToNextPosition} interval={TICK_INTERVAL} onFinished={() => { this.updateBoardWithRandomPosition() }} />
+        }
         return <div css={style}>
             <h2>🥋 Chess Dojo 🥋</h2>
             <button onClick={(e) => { this.updateBoardWithRandomPosition() }}>New Position!</button>
@@ -185,6 +168,7 @@ export class Drill extends React.Component<DrillProps, DrillState> {
                 onCellClick={this.handleCellClick.bind(this)} />
             <Feedback message={this.state.feedback} type={this.state.feedbackType} />
             <p>You found {this.state.goodSquares.length} of {this.state.potential.totalCount} solutions.</p>
+            {progressBar}
             </div>
     }
 }
