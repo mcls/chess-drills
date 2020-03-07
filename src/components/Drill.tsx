@@ -11,9 +11,6 @@ import { PotentialTacticalPositions } from "../PotentialTacticalPositions";
 import { FeedbackType, Feedback } from "./Feedback";
 import { CountdownBar } from "./CountdownBar";
 
-
-
-
 interface DrillState {
     feedback: string
     feedbackType: FeedbackType
@@ -127,7 +124,7 @@ export class Drill extends React.Component<DrillProps, DrillState> {
     }
     
     render() {
-        let borderColor = this.state.feedbackType < FeedbackType.Good ? "#F11" : "#efefef"
+        let borderColor = _.includes([FeedbackType.Bad, FeedbackType.Warning], this.state.feedbackType) ? "#F11" : "#efefef"
         let style = css`
             ${drillStyle}
             border-color: ${borderColor};
