@@ -37,8 +37,8 @@ const drillStyle = css`
 `
 
 const WHITE_QUEEN = { type: "q", color: "w" }
-const TICK_INTERVAL = 5
-const TIME_TO_NEXT_POSITION = 200
+const TICK_INTERVAL = 25
+const TIME_TO_NEXT_POSITION = 1000
 
 export class Drill extends React.Component<DrillProps, DrillState> {
     constructor(props: DrillProps) {
