@@ -19,6 +19,7 @@ export class Feedback extends React.Component<FeedbackProps, {}> {
             case FeedbackType.Good: return "#090"
             case FeedbackType.Bad: return "#F00"
             case FeedbackType.Warning: return "darkorange"
+            case FeedbackType.Neutral: return "#333"
         }
     }
 
@@ -33,7 +34,8 @@ export class Feedback extends React.Component<FeedbackProps, {}> {
 enum FeedbackType {
     Bad = 0,
     Warning = 1,
-    Good = 2
+    Neutral = 2,
+    Good = 3,
 }
 
 interface DrillState {
@@ -64,8 +66,8 @@ export class Drill extends React.Component<DrillProps, DrillState> {
         super(props)
         let chess = this.generateRandomBoard()
         this.state = {
-            feedback: "-",
-            feedbackType: FeedbackType.Good,
+            feedback: "Click on a square to place a piece!",
+            feedbackType: FeedbackType.Neutral,
             chess: chess,
             board: chess.board(),
             goodSquares: [],
@@ -174,7 +176,6 @@ export class Drill extends React.Component<DrillProps, DrillState> {
             <Board board={this.state.board} 
                 goodSquares={this.state.goodSquares}
                 onCellClick={this.handleCellClick.bind(this)} />
-            <p><code>{this.state.chess.fen()}</code></p>
             <Feedback message={this.state.feedback} type={this.state.feedbackType} />
             <p>You found {this.state.goodSquares.length} of {this.state.potential.totalCount} solutions.</p>
             </div>
