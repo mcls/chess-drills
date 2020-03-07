@@ -1,10 +1,6 @@
 import { Chess } from './vendor/chess'
 import { POSITIONS } from './helpers'
-
-interface PotentialTacticalPositions {
-    forks: Array<string>
-    skewers: Array<string>
-}
+import { PotentialTacticalPositions } from './PotentialTacticalPositions'
 
 export class ChessWrapper {
     readonly chess: Chess
@@ -102,10 +98,10 @@ export class ChessWrapper {
                 }
             })
         })
-        return {
+        return new PotentialTacticalPositions({
             forks: forks,
             skewers: skewers
-        }
+        })
     }
 
     // Return all threats for a specific square. Threats as in: who could attack this square.

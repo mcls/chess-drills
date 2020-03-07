@@ -7,6 +7,7 @@ import Board from './Board'
 import { Piece, POSITIONS } from "../helpers";
 import { PositionEvaluation } from "../PositionEvaluation";
 import { ChessWrapper } from "../ChessWrapper";
+import { PotentialTacticalPositions } from "../PotentialTacticalPositions";
 
 interface FeedbackProps {
     message: string,
@@ -40,7 +41,8 @@ interface DrillState {
     feedbackType: FeedbackType
     board: Array<Array<ChessPiece>>
     chess: ChessWrapper,
-    goodSquares: Array<string>
+    goodSquares: Array<string>,
+    potential: PotentialTacticalPositions,
 }
 
 interface DrillProps {
@@ -55,6 +57,8 @@ const drillStyle = css`
     border-color: #333;
 `
 
+const WHITE_QUEEN = { type: "q", color: "w" }
+
 export class Drill extends React.Component<DrillProps, DrillState> {
     constructor(props: DrillProps) {
         super(props)
@@ -65,6 +69,7 @@ export class Drill extends React.Component<DrillProps, DrillState> {
             chess: chess,
             board: chess.board(),
             goodSquares: [],
+            potential: chess.potentialTacticalPositions(WHITE_QUEEN),
         };
     }
 
@@ -82,6 +87,7 @@ export class Drill extends React.Component<DrillProps, DrillState> {
             chess: chess, 
             board: chess.board(),
             goodSquares: [],
+            potential: chess.potentialTacticalPositions(WHITE_QUEEN)
         })
     }
 
@@ -94,17 +100,10 @@ export class Drill extends React.Component<DrillProps, DrillState> {
             })
             return
         }
-        let placedPiece = { type: "q", color: "w" }
+        let placedPiece = WHITE_QUEEN
         let evaluation = new PositionEvaluation(this.state.chess, placedPiece, position) 
         let isSkewer = evaluation.isSkewer();
         let isFork = evaluation.isFork();
-        console.log("Fork?", isFork)
-        console.log("Skewer?", isSkewer)
-        console.log("Safe?", evaluation.isSafe())
-        console.log("Threats", evaluation.threats)
-
-        let potential = this.state.chess.potentialTacticalPositions(placedPiece)
-        
         
         let isGood = false
         if (!evaluation.isSafe()) {
@@ -177,6 +176,7 @@ export class Drill extends React.Component<DrillProps, DrillState> {
                 onCellClick={this.handleCellClick.bind(this)} />
             <p><code>{this.state.chess.fen()}</code></p>
             <Feedback message={this.state.feedback} type={this.state.feedbackType} />
+            <p>You found {this.state.goodSquares.length} of {this.state.potential.totalCount} solutions.</p>
             </div>
     }
 }
