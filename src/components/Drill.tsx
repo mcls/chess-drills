@@ -134,9 +134,16 @@ export class Drill extends React.Component<DrillProps, DrillState> {
         }
         this.setState({board: evaluation.board()})
         if ( isGood ) {
-            this.setState({
-                goodSquares: _.concat(this.state.goodSquares, [position])
-            })
+
+            let newGoodSquares = _.concat(this.state.goodSquares, [position])
+            this.setState({ goodSquares: newGoodSquares })
+
+            // Generate new position if all solutions have been found
+            if ( newGoodSquares.length >= this.state.potential.totalCount ) {
+                setTimeout(() => {
+                    this.updateBoardWithRandomPosition()
+                }, 1000)  
+            }
         }
     }
     
