@@ -55,24 +55,28 @@ export class Drill extends React.Component<DrillProps, DrillState> {
     generateRandomBoard(): ChessWrapper {
         const chess = ChessWrapper.fromFEN('8/8/8/8/8/8/8/8 w - - 0 1')
         let randomPosition = _.sample(POSITIONS.filter((pos) => pos != 'd4'))
-        chess.put({ type: 'k', color: 'b' }, 'd4')
+        chess.put({ type: 'k', color: 'b' }, _.sample(['d4', 'd5', 'e4', 'e5']))
         chess.put({ type: _.sample(['r', 'n', 'b']), color: 'b' }, randomPosition)
         return chess
     }
 
     updateBoardWithRandomPosition() {
         let chess = this.generateRandomBoard()
+        let potential = chess.potentialTacticalPositions(WHITE_QUEEN)
+        if ( potential.totalCount == 0 ) {
+            this.updateBoardWithRandomPosition()
+            return 
+        }
         this.setState({
             chess: chess, 
             board: chess.board(),
             goodSquares: [],
-            potential: chess.potentialTacticalPositions(WHITE_QUEEN),
+            potential: potential,
             timeLeftToNextPosition: 0,
         })
     }
 
     handleCellClick(position: string, piece: Piece) {
-        console.log("position:", position, "piece:", piece)
         if (piece != null) {
             this.setState({
                 feedback: "There is already a piece here!",
