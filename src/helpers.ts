@@ -44,11 +44,6 @@ export class Piece {
     }
 }
 
-export function pieceFromChessJS(piece: {type: string; color: string}): Piece {
-    if (piece == null) return null
-    return new Piece(stringToPieceType(piece.type), stringToPieceColor(piece.color))
-}
-
 function stringToPieceType(key: string): PieceType {
     switch ( key ){
         case 'p': return PieceType.Pawn;
@@ -69,6 +64,11 @@ function stringToPieceColor(key: string): PieceColor {
     }
 
     throw "Can't find PieceType for key: " + key
+}
+
+export function pieceFromChessJS(piece: {type: string; color: string}): Piece {
+    if (piece == null) return null
+    return new Piece(stringToPieceType(piece.type), stringToPieceColor(piece.color))
 }
 
 export const POSITIONS: Array<string> = ((): Array<string> => {

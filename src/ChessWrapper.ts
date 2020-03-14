@@ -29,7 +29,14 @@ export class ChessWrapper {
         return this.chess.put(piece, position)
     }
 
-    move(move: string | { from: string; to: string }) {
+    move(move: string | { from: string; to: string }): {
+        color: string;
+        from: string;
+        to: string;
+        flags: string;
+        piece: string;
+        san: string;
+    } {
         return this.chess.move(move)
     }
 
@@ -39,7 +46,7 @@ export class ChessWrapper {
 
     // Extra methods below ----------
 
-    copy() {
+    copy(): ChessWrapper {
         return ChessWrapper.fromFEN(this.fen())
     }
 

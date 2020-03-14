@@ -5,7 +5,6 @@ import { css, jsx } from '@emotion/core'
 
 import Board from './Board'
 import { Piece, POSITIONS } from "../helpers";
-import { PositionEvaluation } from "../PositionEvaluation";
 import { ChessWrapper } from "../ChessWrapper";
 import { PotentialTacticalPositions } from "../PotentialTacticalPositions";
 import { FeedbackType, Feedback } from "./Feedback";
@@ -21,9 +20,6 @@ interface DrillState {
     timeLeftToNextPosition: number;
 }
 
-interface DrillProps {
-}
-
 const drillStyle = css`
     padding: 5px;
     display: inline-block;
@@ -37,8 +33,8 @@ const WHITE_QUEEN = { type: "q", color: "w" }
 const TICK_INTERVAL = 25
 const TIME_TO_NEXT_POSITION = 1000
 
-export class Drill extends React.Component<DrillProps, DrillState> {
-    constructor(props: DrillProps) {
+export class Drill extends React.Component<{}, DrillState> {
+    constructor(props: {}) {
         super(props)
         const chess = this.generateRandomBoard()
         this.state = {
@@ -168,7 +164,7 @@ export class Drill extends React.Component<DrillProps, DrillState> {
         }
         return <div css={style}>
             <h2>🥋 Chess Dojo 🥋</h2>
-            <button onClick={(e) => { this.updateBoardWithRandomPosition() }}>New Position!</button>
+            <button onClick={() => { this.updateBoardWithRandomPosition() }}>New Position!</button>
             <Board board={this.state.board} 
                 goodSquares={this.state.goodSquares}
                 onCellClick={this.handleCellClick.bind(this)} />

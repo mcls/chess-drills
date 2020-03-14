@@ -75,6 +75,7 @@ export class BoardSquare extends React.Component<CellProps,{}> {
         return isDark
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     handleClick(e: React.MouseEvent) {
         if (this.props.onClick) {
             this.props.onClick(this.props.position, this.props.piece)

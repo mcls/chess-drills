@@ -4,7 +4,7 @@ import { ChessWrapper } from "./ChessWrapper";
 describe("PositionEvaluation", () => {
     describe("isFork()", () => {
         it("works", () => {
-            const testFork = (fen: string, position: string, flag: boolean) => {
+            const testFork = (fen: string, position: string, flag: boolean): void => {
                 const chess = ChessWrapper.fromFEN(fen)
                 const pe = new PositionEvaluation(chess, { type: 'q', color: 'w'}, position)
                 expect(pe.isFork()).toEqual(flag)
@@ -20,7 +20,7 @@ describe("PositionEvaluation", () => {
 
     describe("isSkewer()", () => {
         it("works", () => {
-            const testSkewer = (fen: string, position: string, flag: boolean) => {
+            const testSkewer = (fen: string, position: string, flag: boolean): void => {
                 const chess = ChessWrapper.fromFEN(fen)
                 const pe = new PositionEvaluation(chess, { type: 'q', color: 'w'}, position)
                 expect(pe.isSkewer()).toEqual(flag)
