@@ -3,8 +3,8 @@ import * as React from "react";
 import { css, jsx } from '@emotion/core'
 
 interface FeedbackProps {
-    message: string,
-    type: FeedbackType
+    message: string;
+    type: FeedbackType;
 }
 
 export enum FeedbackType {
@@ -15,7 +15,7 @@ export enum FeedbackType {
 }
 
 export class Feedback extends React.Component<FeedbackProps, {}> {
-    color() {
+    color(): string {
         switch(this.props.type) {
             case FeedbackType.Good: return "#090"
             case FeedbackType.Bad: return "#F00"
@@ -24,8 +24,8 @@ export class Feedback extends React.Component<FeedbackProps, {}> {
         }
     }
 
-    render() {
-        let style = css`
+    render(): JSX.Element {
+        const style = css`
             color: ${this.color()}
         `
         return <p css={style}>{this.props.message}</p>

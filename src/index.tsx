@@ -3,7 +3,7 @@ import * as ReactDOM from "react-dom";
 
 import App from "./components/App";
 
-let root = document.createElement('div');
+const root = document.createElement('div');
 root.setAttribute("id", "app-root");
 document.body.appendChild(root)
 

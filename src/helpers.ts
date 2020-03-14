@@ -21,7 +21,7 @@ export class Piece {
         this.color = color;
     }
 
-    toEmoji():string {
+    toEmoji(): string {
         if (this.color == PieceColor.White) {
             switch (this.type) {
                 case PieceType.Pawn: return "♙";
@@ -44,12 +44,12 @@ export class Piece {
     }
 }
 
-export function pieceFromChessJS(piece:{type: string, color: string}):Piece {
+export function pieceFromChessJS(piece: {type: string; color: string}): Piece {
     if (piece == null) return null
     return new Piece(stringToPieceType(piece.type), stringToPieceColor(piece.color))
 }
 
-function stringToPieceType(key: string):PieceType {
+function stringToPieceType(key: string): PieceType {
     switch ( key ){
         case 'p': return PieceType.Pawn;
         case 'k': return PieceType.King;
@@ -62,7 +62,7 @@ function stringToPieceType(key: string):PieceType {
     throw "Can't find PieceType for key: " + key
 }
 
-function stringToPieceColor(key: string):PieceColor {
+function stringToPieceColor(key: string): PieceColor {
     switch ( key ){
         case 'w': return PieceColor.White;
         case 'b': return PieceColor.Black;
@@ -71,11 +71,11 @@ function stringToPieceColor(key: string):PieceColor {
     throw "Can't find PieceType for key: " + key
 }
 
-export const POSITIONS: Array<string> = (():Array<string> => {
-    let positions: Array<string> = []
+export const POSITIONS: Array<string> = ((): Array<string> => {
+    const positions: Array<string> = []
     'abcdefgh'.split('').forEach(file => {
         for (let i = 1; i <= 8; i++) {
-            let position = `${file}${i}`
+            const position = `${file}${i}`
             positions.push(position)
         }
     })

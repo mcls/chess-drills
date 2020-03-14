@@ -25,11 +25,11 @@ export class ChessWrapper {
         return this.chess.get(square)
     }
 
-    put(piece: ChessPiece, position: string): Boolean {
+    put(piece: ChessPiece, position: string): boolean {
         return this.chess.put(piece, position)
     }
 
-    move(move: string | { from: string, to: string }) {
+    move(move: string | { from: string; to: string }) {
         return this.chess.move(move)
     }
 
@@ -56,27 +56,27 @@ export class ChessWrapper {
     }
 
     potentialCaptures(position: string): Array<string> {
-        let legalMoves = this.chess.moves({ square: position })
+        const legalMoves = this.chess.moves({ square: position })
         return this.onlyKeepCaptures(legalMoves)
     }
 
     potentialTacticalPositions(piece: ChessPiece): PotentialTacticalPositions {
-        let forks: Array<string> = []
-        let skewers: Array<string> = []
-        let unsafeSquares: Array<string> = []
+        const forks: Array<string> = []
+        const skewers: Array<string> = []
+        const unsafeSquares: Array<string> = []
         POSITIONS.forEach((pos) => {
             if (this.get(pos) != null) return // skip
 
-            let chess = this.copy()
+            const chess = this.copy()
             chess.put(piece, pos)
 
-            let threats = this.threatsFor(pos)
+            const threats = this.threatsFor(pos)
             if (threats.length > 0) {
                 unsafeSquares.push(pos)
                 return // not a safe position because black can capture back
             }
 
-            let captures = chess.potentialCaptures(pos)
+            const captures = chess.potentialCaptures(pos)
             if (captures.length > 1) {
                 forks.push(pos)
                 return // don't bother checking for skewers/pins anymore if already a fork
@@ -84,8 +84,8 @@ export class ChessWrapper {
 
             captures.forEach((cap) => {
                 // Capture the piece
-                let chess1 = chess.copyWithWhiteStart()
-                let move = chess1.move(cap)
+                const chess1 = chess.copyWithWhiteStart()
+                const move = chess1.move(cap)
 
                 // invalid move (not sure how possible, maybe because of check?)
                 if ( move == null ) { 
@@ -93,10 +93,10 @@ export class ChessWrapper {
                 } 
                 
                 // Move back to original position
-                let chess2 = chess1.copyWithWhiteStart()
+                const chess2 = chess1.copyWithWhiteStart()
                 chess2.move({ from: move.to, to: move.from })
 
-                let chess3 = chess2.copyWithWhiteStart()
+                const chess3 = chess2.copyWithWhiteStart()
                 // Do we still have the same amount of potential captures? 
                 // If so, it meant we discovered an attack and we were thus originally skewering or pinning a piece.
                 if (captures.length == chess3.potentialCaptures(move.from).length) {
@@ -114,12 +114,12 @@ export class ChessWrapper {
     // Return all threats for a specific square. Threats as in: who could attack this square.
     threatsFor(newPosition: string): Array<string> {
         let responses: Array<string> = []
-        let chess = this.copyWithBlackStart()
+        const chess = this.copyWithBlackStart()
         chess.put({ type: 'p', color: 'w' }, newPosition)
 
         POSITIONS.forEach((position) => {
             if (position != newPosition) {
-                let captures = chess.potentialCaptures(position)
+                const captures = chess.potentialCaptures(position)
                 if (captures.length > 0) {
                     responses = responses.concat(captures)
                 }

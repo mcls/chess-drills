@@ -1,9 +1,9 @@
 import {uniq, concat} from 'lodash';
 
 interface ConstructorArgs {
-    skewers: Array<string>
-    forks: Array<string>
-    unsafeSquares: Array<string>
+    skewers: Array<string>;
+    forks: Array<string>;
+    unsafeSquares: Array<string>;
 }
 export class PotentialTacticalPositions {
     readonly skewers: Array<string>

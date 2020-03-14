@@ -29,7 +29,7 @@ export class PositionEvaluation {
         let responses: Array<string> = []
         POSITIONS.forEach((position) => {
             if (position != this.position) {
-                let captures = this.nextMoveChess.potentialCaptures(position)
+                const captures = this.nextMoveChess.potentialCaptures(position)
                 if (captures.length > 0 ) {
                     responses = responses.concat(captures)
                 }
@@ -38,26 +38,26 @@ export class PositionEvaluation {
         return responses
     }
 
-    isFork(): Boolean {
+    isFork(): boolean {
         return this.potentialCaptures.length > 1
     }
 
-    isSkewer(): Boolean {
+    isSkewer(): boolean {
         if (!this.isSafe() || this.isFork()) {
             return false 
         }
         
         if (this.potentialCaptures.length == 0) return false 
         
-        let len = this.potentialCaptures.length
+        const len = this.potentialCaptures.length
         let skewerFound = false;
         this.potentialCaptures.forEach((cap) => {
-            let chess1 = this.chess.copyWithWhiteStart()
-            let move = chess1.move(cap)
+            const chess1 = this.chess.copyWithWhiteStart()
+            const move = chess1.move(cap)
             // move back
-            let chess2 = chess1.copyWithWhiteStart()
+            const chess2 = chess1.copyWithWhiteStart()
             chess2.move({ from: move.to, to: move.from })
-            let pe = new PositionEvaluation(chess2.copyWithWhiteStart(), this.piece, this.position)
+            const pe = new PositionEvaluation(chess2.copyWithWhiteStart(), this.piece, this.position)
             if (len == pe.potentialCaptures.length) {
                 skewerFound = true; // TODO: short circuit?
             }
@@ -65,7 +65,7 @@ export class PositionEvaluation {
         return skewerFound
     }
 
-    isSafe(): Boolean {
+    isSafe(): boolean {
         return this.threats.length == 0
     }
 

@@ -10,13 +10,13 @@ export enum Highlight {
 }
 
 export interface CellProps { 
-    piece?: Piece, 
-    rowIndex: number,
-    cellIndex: number,
-    position: string,
-    onClick?(position: string, piece?: Piece):void,
-    orientationWhite: Boolean,
-    highlight: Highlight
+    piece?: Piece; 
+    rowIndex: number;
+    cellIndex: number;
+    position: string;
+    onClick?(position: string, piece?: Piece): void;
+    orientationWhite: boolean;
+    highlight: Highlight;
 }
 
 const cellSize = 50;
@@ -60,8 +60,8 @@ export class BoardSquare extends React.Component<CellProps,{}> {
 
     // TODO: Extract this?
     get isDarkCell() {
-        let rowIx = this.props.rowIndex
-        let cellIx = this.props.cellIndex
+        const rowIx = this.props.rowIndex
+        const cellIx = this.props.cellIndex
         let isDark = false
         if (rowIx % 2 == 0) {
             isDark = !isDark
@@ -82,8 +82,8 @@ export class BoardSquare extends React.Component<CellProps,{}> {
     }
 
     render() {
-        let content = this.props.piece != null ? this.props.piece.toEmoji() : ''
-        let whitePiece = this.props.piece && this.props.piece.color == PieceColor.White
+        const content = this.props.piece != null ? this.props.piece.toEmoji() : ''
+        const whitePiece = this.props.piece && this.props.piece.color == PieceColor.White
 
         let bg = '';
         if (this.props.highlight == Highlight.Good) {
@@ -92,7 +92,7 @@ export class BoardSquare extends React.Component<CellProps,{}> {
             line-height: 34px;
             `
         }
-        let style = css`
+        const style = css`
             ${this.isDarkCell ? darkCellCSS : lightCellCSS}
             ${bg}
             color: ${whitePiece ? '#fff' : '#111'}

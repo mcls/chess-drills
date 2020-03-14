@@ -1,14 +1,14 @@
 import * as React from "react";
 
 interface CountdownBarProps {
-    max: number,
-    interval: number,
-    onFinished?: Function
+    max: number;
+    interval: number;
+    onFinished?: Function;
 }
 
 interface CountdownBarState {
-    value: number,
-    timerID: number,
+    value: number;
+    timerID: number;
 }
 
 export class CountdownBar extends React.Component<CountdownBarProps, CountdownBarState> {

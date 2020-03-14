@@ -12,13 +12,13 @@ import { FeedbackType, Feedback } from "./Feedback";
 import { CountdownBar } from "./CountdownBar";
 
 interface DrillState {
-    feedback: string
-    feedbackType: FeedbackType
-    board: Array<Array<ChessPiece>>
-    chess: ChessWrapper,
-    goodSquares: Array<string>,
-    potential: PotentialTacticalPositions,
-    timeLeftToNextPosition: number,
+    feedback: string;
+    feedbackType: FeedbackType;
+    board: Array<Array<ChessPiece>>;
+    chess: ChessWrapper;
+    goodSquares: Array<string>;
+    potential: PotentialTacticalPositions;
+    timeLeftToNextPosition: number;
 }
 
 interface DrillProps {
@@ -40,7 +40,7 @@ const TIME_TO_NEXT_POSITION = 1000
 export class Drill extends React.Component<DrillProps, DrillState> {
     constructor(props: DrillProps) {
         super(props)
-        let chess = this.generateRandomBoard()
+        const chess = this.generateRandomBoard()
         this.state = {
             feedback: "Click on a square to place a piece!",
             feedbackType: FeedbackType.Neutral,
@@ -54,15 +54,15 @@ export class Drill extends React.Component<DrillProps, DrillState> {
 
     generateRandomBoard(): ChessWrapper {
         const chess = ChessWrapper.fromFEN('8/8/8/8/8/8/8/8 w - - 0 1')
-        let randomPosition = _.sample(POSITIONS.filter((pos) => pos != 'd4'))
+        const randomPosition = _.sample(POSITIONS.filter((pos) => pos != 'd4'))
         chess.put({ type: 'k', color: 'b' }, _.sample(['d4', 'd5', 'e4', 'e5']))
         chess.put({ type: _.sample(['r', 'n', 'b']), color: 'b' }, randomPosition)
         return chess
     }
 
     updateBoardWithRandomPosition() {
-        let chess = this.generateRandomBoard()
-        let potential = chess.potentialTacticalPositions(WHITE_QUEEN)
+        const chess = this.generateRandomBoard()
+        const potential = chess.potentialTacticalPositions(WHITE_QUEEN)
         if ( potential.totalCount == 0 ) {
             this.updateBoardWithRandomPosition()
             return 
@@ -84,11 +84,11 @@ export class Drill extends React.Component<DrillProps, DrillState> {
             })
             return
         }
-        let placedPiece = WHITE_QUEEN
+        const placedPiece = WHITE_QUEEN
         
-        let isUnsafe = _.includes(this.state.potential.unsafeSquares, position)
-        let isSkewer = _.includes(this.state.potential.skewers, position)
-        let isFork = _.includes(this.state.potential.forks, position)
+        const isUnsafe = _.includes(this.state.potential.unsafeSquares, position)
+        const isSkewer = _.includes(this.state.potential.skewers, position)
+        const isFork = _.includes(this.state.potential.forks, position)
         
         let isGood = false
         if (isUnsafe) {
@@ -98,7 +98,7 @@ export class Drill extends React.Component<DrillProps, DrillState> {
             })
         } else if (isFork || isSkewer) {
             isGood = true
-            let message = _.sample([
+            const message = _.sample([
                 'Wax on, wax off! 🧼',
                 'Amazing! ✨',
                 'Paint the fence. Up... down. Up! Down! 🎨',
@@ -116,13 +116,13 @@ export class Drill extends React.Component<DrillProps, DrillState> {
             })
         }
 
-        let chess = this.state.chess.copyWithWhiteStart()
+        const chess = this.state.chess.copyWithWhiteStart()
         chess.put(placedPiece, position)
         this.setState({board: chess.board()})
         
         if ( isGood ) {
 
-            let newGoodSquares = _.concat(this.state.goodSquares, [position])
+            const newGoodSquares = _.concat(this.state.goodSquares, [position])
             this.setState({ goodSquares: newGoodSquares })
 
             // Generate new position if all solutions have been found
@@ -133,8 +133,8 @@ export class Drill extends React.Component<DrillProps, DrillState> {
     }
     
     render() {
-        let borderColor = _.includes([FeedbackType.Bad, FeedbackType.Warning], this.state.feedbackType) ? "#F11" : "#efefef"
-        let style = css`
+        const borderColor = _.includes([FeedbackType.Bad, FeedbackType.Warning], this.state.feedbackType) ? "#F11" : "#efefef"
+        const style = css`
             ${drillStyle}
             border-color: ${borderColor};
             font-family: sans-serif;
