@@ -1,6 +1,7 @@
 import { Chess } from './vendor/chess'
 import { POSITIONS } from './helpers'
 import { PotentialTacticalPositions } from './PotentialTacticalPositions'
+import { ChessPiece } from './Piece';
 
 export class ChessWrapper {
     readonly chess: Chess

@@ -1,5 +1,6 @@
 import { POSITIONS } from './helpers'
 import { ChessWrapper } from './ChessWrapper';
+import { ChessPiece } from './Piece';
 
 export class PositionEvaluation {
     protected chess: ChessWrapper;

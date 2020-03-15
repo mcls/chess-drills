@@ -5,7 +5,7 @@ import { css, jsx } from "@emotion/core";
 
 import Board from "./Board";
 import { POSITIONS } from "../helpers";
-import { Piece } from "../Piece";
+import { Piece, ChessPiece } from "../Piece";
 import { ChessWrapper } from "../ChessWrapper";
 import { PotentialTacticalPositions } from "../PotentialTacticalPositions";
 import { FeedbackType, Feedback } from "./Feedback";

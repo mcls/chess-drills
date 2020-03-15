@@ -1,3 +1,8 @@
+export interface ChessPiece {
+    type: string;
+    color: string;
+}
+
 export enum PieceColor {
     White = 'w',
     Black = 'b'
