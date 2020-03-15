@@ -3,7 +3,8 @@ import * as React from "react";
 import { css, jsx } from '@emotion/core'
 import * as _ from 'lodash';
 
-import { Piece, pieceFromChessJS } from "../helpers"
+import { pieceFromChessJS } from "../helpers"
+import { Piece } from "../Piece";
 import { BoardSquare, Highlight } from "./BoardSquare"
 
 export interface BoardProps {

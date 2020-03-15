@@ -1,5 +1,5 @@
 
 interface ChessPiece {
-    type: string,
-    color: string
+    type: string;
+    color: string;
 }

@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import * as React from "react";
 import { css, jsx } from '@emotion/core'
-import { Piece, PieceColor } from "../helpers"
+import { Piece, PieceColor } from "../Piece";
 
 export enum Highlight {
     Good,

@@ -1,11 +1,15 @@
 /** @jsx jsx */
 import * as React from "react";
-import { css, jsx } from '@emotion/core'
+import { css, jsx } from "@emotion/core";
 
-import { Drill } from './Drill'
+import { Drill } from "./Drill";
 
 export default class App extends React.Component<{}, {}> {
-    render(): JSX.Element {
-        return <div css={css({textAlign: 'center'})}><Drill /></div>
-    }
+  render(): JSX.Element {
+    return (
+      <div css={css({ textAlign: "center" })}>
+        <Drill />
+      </div>
+    );
+  }
 }
