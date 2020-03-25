@@ -5,7 +5,7 @@ import { css, jsx } from "@emotion/core";
 
 import Board from "./Board";
 import { POSITIONS } from "../helpers";
-import { Piece, ChessPiece } from "../Piece";
+import { Piece, ChessPiece, pieceFromChessJS } from "../Piece";
 import { ChessWrapper } from "../ChessWrapper";
 import { PotentialTacticalPositions } from "../PotentialTacticalPositions";
 import { FeedbackType, Feedback } from "./Feedback";
@@ -19,6 +19,7 @@ interface DrillState {
   goodSquares: Array<string>;
   potential: PotentialTacticalPositions;
   timeLeftToNextPosition: number;
+  pieceToPlace: ChessPiece;
 }
 
 const drillStyle = css`
@@ -31,6 +32,7 @@ const drillStyle = css`
 `;
 
 const WHITE_QUEEN = { type: "q", color: "w" };
+const WHITE_KIGHT = { type: "n", color: "w" };
 const TICK_INTERVAL = 25;
 const TIME_TO_NEXT_POSITION = 1000;
 
@@ -38,14 +40,16 @@ export class Drill extends React.Component<{}, DrillState> {
   constructor(props: {}) {
     super(props);
     const chess = this.generateRandomBoard();
+    const pieceToPlace = _.sample([WHITE_KIGHT, WHITE_QUEEN]);
     this.state = {
       feedback: "Click on a square to place a piece!",
       feedbackType: FeedbackType.Neutral,
       chess: chess,
       board: chess.board(),
       goodSquares: [],
-      potential: chess.potentialTacticalPositions(WHITE_QUEEN),
-      timeLeftToNextPosition: 0
+      potential: chess.potentialTacticalPositions(pieceToPlace),
+      timeLeftToNextPosition: 0,
+      pieceToPlace: pieceToPlace
     };
   }
 
@@ -59,7 +63,7 @@ export class Drill extends React.Component<{}, DrillState> {
 
   updateBoardWithRandomPosition() {
     const chess = this.generateRandomBoard();
-    const potential = chess.potentialTacticalPositions(WHITE_QUEEN);
+    const potential = chess.potentialTacticalPositions(this.state.pieceToPlace);
     if (potential.totalCount == 0) {
       this.updateBoardWithRandomPosition();
       return;
@@ -81,7 +85,6 @@ export class Drill extends React.Component<{}, DrillState> {
       });
       return;
     }
-    const placedPiece = WHITE_QUEEN;
 
     const isUnsafe = _.includes(this.state.potential.unsafeSquares, position);
     const isSkewer = _.includes(this.state.potential.skewers, position);
@@ -113,7 +116,7 @@ export class Drill extends React.Component<{}, DrillState> {
     }
 
     const chess = this.state.chess.copyWithWhiteStart();
-    chess.put(placedPiece, position);
+    chess.put(this.state.pieceToPlace, position);
     this.setState({ board: chess.board() });
 
     if (isGood) {
@@ -177,6 +180,7 @@ export class Drill extends React.Component<{}, DrillState> {
     return (
       <div css={style}>
         <h2>🥋 Chess Dojo 🥋</h2>
+
         <button
           onClick={() => {
             this.updateBoardWithRandomPosition();
@@ -184,6 +188,9 @@ export class Drill extends React.Component<{}, DrillState> {
         >
           New Position!
         </button>
+
+        <p>Place that {pieceFromChessJS(this.state.pieceToPlace).toEmoji()} on the board!</p>
+
         <Board
           board={this.state.board}
           goodSquares={this.state.goodSquares}
@@ -198,6 +205,7 @@ export class Drill extends React.Component<{}, DrillState> {
           You found {this.state.goodSquares.length} of{" "}
           {this.state.potential.totalCount} solutions.
         </p>
+        
         {progressBar}
       </div>
     );

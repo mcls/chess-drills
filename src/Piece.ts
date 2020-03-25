@@ -1,3 +1,5 @@
+import Chess from "./vendor/chess";
+
 export interface ChessPiece {
     type: string;
     color: string;
@@ -47,3 +49,31 @@ export class Piece {
         }
     }
 }
+
+function stringToPieceType(key: string): PieceType {
+    switch ( key ){
+        case 'p': return PieceType.Pawn;
+        case 'k': return PieceType.King;
+        case 'q': return PieceType.Queen;
+        case 'r': return PieceType.Rook;
+        case 'b': return PieceType.Bishop;
+        case 'n': return PieceType.Knight;
+    }
+
+    throw "Can't find PieceType for key: " + key
+}
+
+function stringToPieceColor(key: string): PieceColor {
+    switch (key) {
+        case 'w': return PieceColor.White;
+        case 'b': return PieceColor.Black;
+    }
+
+    throw "Can't find PieceType for key: " + key
+}
+
+export function pieceFromChessJS(piece: ChessPiece): Piece {
+    if (piece == null) return null
+    return new Piece(stringToPieceType(piece.type), stringToPieceColor(piece.color))
+}
+
